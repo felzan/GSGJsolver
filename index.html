@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>GSGJsolver</title>
+	<link rel="stylesheet" type="number/css" href="style.css">
+</head>
+<body>
+
+<table>
+	<tr>
+		<td>X</td>
+		<td>Y</td>
+		<td>Z</td>
+		<td>=</td>
+	</tr>
+
+	<tr>
+		<td><input type="number" name="x1" id="x1"></td>
+		<td><input type="number" name="y1" id="y1"></td>
+		<td><input type="number" name="z1" id="z1"></td>
+		<td>= <input type="number" name="e3" id="e1"></td>
+	</tr>
+	<tr>
+		<td><input type="number" name="x2" id="x2"></td>
+		<td><input type="number" name="y2" id="y2"></td>
+		<td><input type="number" name="z2" id="z2"></td>
+		<td>= <input type="number" name="e3" id="e2"></td>
+	</tr>
+	<tr>
+		<td><input type="number" name="x3" id="x3"></td>
+		<td><input type="number" name="y3" id="y3"></td>
+		<td><input type="number" name="z3" id="z3"></td>
+		<td>= <input type="number" name="e3" id="e3"></td>
+	</tr>
+</table>
+<br>
+iteração atual: <label class="iteracao">1</label><br>
+<br>
+Valor atual X: <label id="vx"></label><br>
+Valor atual Y: <label id="vy"></label><br>
+Valor atual Z: <label id="vz"></label><br>
+
+<button onClick="iteracao()">
+	Passo
+</button>
+
+<script src="jquery-3.1.1.min.js"></script>
+<script src="solver.js"></script>
+</body>
+</html>
