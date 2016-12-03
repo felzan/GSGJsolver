@@ -32,6 +32,9 @@ $('#step').click(function(){
 	// tab.push([x2, y2, z2]);
 	// tab.push([x3, y3, z3]);
 
+	var erroaceitavel = $('#erroaceitavel').val();
+
+
 	va[0] = (e1 - y1*by - z1*bz)/x1;
 	va[1] = (e2 - x2*bx - z2*bz)/y2;
 	va[2] = (e3 - y3*by - x3*bx)/z3;
@@ -39,7 +42,21 @@ $('#step').click(function(){
 	$('#bx').text(va[0]);
 	$('#by').text(va[1]);
 	$('#bz').text(va[2]);
-// console.log(tab[1][2].val());
+
+	if($('#valordeX').text() == "?")
+	if(Math.abs(Math.abs(Math.round(va[0]) - va[0])) <= erroaceitavel){
+		$('#valordeX').text(Math.round(va[0]));
+	}
+
+	if($('#valordeY').text() == "?")
+	if(Math.abs(Math.abs(Math.round(va[1]) - va[1])) <= erroaceitavel){
+		$('#valordeY').text(Math.round(va[1]));
+	}
+
+	if($('#valordeZ').text() == "?")
+	if(Math.abs(Math.abs(Math.round(va[2]) - va[2])) <= erroaceitavel){
+		$('#valordeZ').text(Math.round(va[2]));
+	}
 });
 // function GS(){
 
