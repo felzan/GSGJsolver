@@ -37,25 +37,39 @@
 
 Erro aceitável:<input type="text" value="0.0005" name="erroaceitavel" id="erroaceitavel">
 <br>
-iteração atual: <span id="iteracao"></span><br>
+iteração atual: <span id="iteracao">0</span><br>
 <br>
+<div class="GS">
+<h2>Gauss Seidel</h2>
 Valores da iteração: 
-<label id="bx">0</label> | 
-<label id="by">0</label> | 
-<label id="bz">0</label> 
+<label id="sbx">0</label> | 
+<label id="sby">0</label> | 
+<label id="sbz">0</label> 
 <br>
-<label id="tamanho">0</label>
-<br>
-<!-- Valor atual X: <label id="vx"></label><br>
-Valor atual Y: <label id="vy"></label><br>
-Valor atual Z: <label id="vz"></label><br> -->
 
-<p>Valor de X <span id="valordeX">?</span></p>
-<p>Valor de Y <span id="valordeY">?</span></p>
-<p>Valor de Z <span id="valordeZ">?</span></p>
+<p>Valor de X <span id="valordeXS">?</span></p>
+<p>Valor de Y <span id="valordeYS">?</span></p>
+<p>Valor de Z <span id="valordeZS">?</span></p>
+</div>
+
+<div class="GJ">
+<h2>Gauss Jacobi</h2>
+Valores da iteração: 
+<label id="jbx">0</label> | 
+<label id="jby">0</label> | 
+<label id="jbz">0</label> 
+<br>
+
+<p>Valor de X <span id="valordeXJ">?</span></p>
+<p>Valor de Y <span id="valordeYJ">?</span></p>
+<p>Valor de Z <span id="valordeZJ">?</span></p>
+</div>
 
 <button id="step">
 	Passo
+</button>
+<button id="solve">
+	Resolver
 </button>
 
 <script src="jquery-3.1.1.min.js"></script>

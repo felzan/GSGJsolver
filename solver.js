@@ -2,7 +2,8 @@ $(document).ready(function(){
 
 var itera = 0;
 
-$('#step').click(function(){
+ 
+	$('#step').click(function(){
 	$('#iteracao').text(++itera);
 
 	var x1 = $('#x1').val();
@@ -21,9 +22,13 @@ $('#step').click(function(){
 	var e2 = $('#e2').val();
 	var e3 = $('#e3').val();
 
-	var bx = $('#bx').text();
-	var by = $('#by').text();
-	var bz = $('#bz').text();
+	var sbx = $('#sbx').text();
+	var sby = $('#sby').text();
+	var sbz = $('#sbz').text();
+
+	var jbx = $('#jbx').text();
+	var jby = $('#jby').text();
+	var jbz = $('#jbz').text();
 
 	// console.log(x1);
 	// var tab = [];
@@ -34,32 +39,56 @@ $('#step').click(function(){
 
 	var erroaceitavel = $('#erroaceitavel').val();
 
+	//GJ
+	va[0] = (e1 - y1*jby - z1*jbz)/x1;
+	va[1] = (e2 - x2*jbx - z2*jbz)/y2;
+	va[2] = (e3 - y3*jby - x3*jbx)/z3;
 
-	va[0] = (e1 - y1*by - z1*bz)/x1;
-	va[1] = (e2 - x2*bx - z2*bz)/y2;
-	va[2] = (e3 - y3*by - x3*bx)/z3;
+	//GS
+	va[3] = (e1 - y1*((va[4]) ? va[4] : sby) - z1*((va[5]) ? va[5] : sbz))/x1;
+	va[4] = (e2 - x2*va[3] - z2*sbz)/y2;
+	va[5] = (e3 - y3*va[4] - x3*va[3])/z3;
 
-	$('#bx').text(va[0]);
-	$('#by').text(va[1]);
-	$('#bz').text(va[2]);
+	$('#jbx').text(va[0]);
+	$('#jby').text(va[1]);
+	$('#jbz').text(va[2]);
 
-	if($('#valordeX').text() == "?")
+
+	$('#sbx').text(va[3]);
+	$('#sby').text(va[4]);
+	$('#sbz').text(va[5]);
+
+	if($('#valordeXJ').text() == "?")
 	if(Math.abs(Math.abs(Math.round(va[0]) - va[0])) <= erroaceitavel){
-		$('#valordeX').text(Math.round(va[0]));
+		$('#valordeXJ').text(Math.round(va[0]));
 	}
 
-	if($('#valordeY').text() == "?")
+	if($('#valordeYJ').text() == "?")
 	if(Math.abs(Math.abs(Math.round(va[1]) - va[1])) <= erroaceitavel){
-		$('#valordeY').text(Math.round(va[1]));
+		$('#valordeYJ').text(Math.round(va[1]));
 	}
 
-	if($('#valordeZ').text() == "?")
+	if($('#valordeZJ').text() == "?")
 	if(Math.abs(Math.abs(Math.round(va[2]) - va[2])) <= erroaceitavel){
-		$('#valordeZ').text(Math.round(va[2]));
+		$('#valordeZJ').text(Math.round(va[2]));
+	}
+
+	//
+	if($('#valordeXS').text() == "?")
+	if(Math.abs(Math.abs(Math.round(va[3]) - va[3])) <= erroaceitavel){
+		$('#valordeXS').text(Math.round(va[3]));
+	}
+
+	if($('#valordeYS').text() == "?")
+	if(Math.abs(Math.abs(Math.round(va[4]) - va[4])) <= erroaceitavel){
+		$('#valordeYS').text(Math.round(va[4]));
+	}
+
+	if($('#valordeZS').text() == "?")
+	if(Math.abs(Math.abs(Math.round(va[5]) - va[5])) <= erroaceitavel){
+		$('#valordeZS').text(Math.round(va[5]));
 	}
 });
-// function GS(){
-
-// }
+//
 
 });
