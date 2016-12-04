@@ -3,6 +3,7 @@
 <head>
 	<title>GSGJsolver</title>
 	<link rel="stylesheet" type="number/css" href="style.css">
+	<meta charset="utf-8">
 </head>
 <body>
 
@@ -15,29 +16,29 @@
 	</tr>
 
 	<tr>
-		<td><input type="number" value="10" name="x1" id="x1"></td>
-		<td><input type="number" value="2" name="y1" id="y1"></td>
-		<td><input type="number" value="1" name="z1" id="z1"></td>
-		<td>= <input type="number" value="7" name="e3" id="e1"></td>
+		<td><input type="number" value="3" name="x1" id="x1"></td>
+		<td><input type="number" value="-1" name="y1" id="y1"></td>
+		<td><input type="number" value="-1" name="z1" id="z1"></td>
+		<td>= <input type="number" value="1" name="e1" id="e1"></td>
 	</tr>
 	<tr>
-		<td><input type="number" value="1" name="x2" id="x2"></td>
-		<td><input type="number" value="5" name="y2" id="y2"></td>
+		<td><input type="number" value="-1" name="x2" id="x2"></td>
+		<td><input type="number" value="3" name="y2" id="y2"></td>
 		<td><input type="number" value="1" name="z2" id="z2"></td>
-		<td>= <input type="number" value="-8" name="e3" id="e2"></td>
+		<td>= <input type="number" value="3" name="e2" id="e2"></td>
 	</tr>
 	<tr>
 		<td><input type="number" value="2" name="x3" id="x3"></td>
-		<td><input type="number" value="3" name="y3" id="y3"></td>
-		<td><input type="number" value="10" name="z3" id="z3"></td>
-		<td>= <input type="number" value="6" name="e3" id="e3"></td>
+		<td><input type="number" value="1" name="y3" id="y3"></td>
+		<td><input type="number" value="4" name="z3" id="z3"></td>
+		<td>= <input type="number" value="7" name="e3" id="e3"></td>
 	</tr>
 </table>
 <br>
 
 Erro aceitável:<input type="text" value="0.0005" name="erroaceitavel" id="erroaceitavel">
 <br>
-iteração atual: <span id="iteracao">0</span><br>
+<!-- iteração atual: <span id="iteracao">0</span><br>
 <br>
 <div class="GS">
 <h2>Gauss Seidel</h2>
@@ -63,14 +64,52 @@ Valores da iteração:
 <p>Valor de X <span id="valordeXJ">?</span></p>
 <p>Valor de Y <span id="valordeYJ">?</span></p>
 <p>Valor de Z <span id="valordeZJ">?</span></p>
+</div> -->
+<hr></hr>
+
+
+<div id="testeConv" style="display:none;">
+	<p>Converge para Gauss-Jacobi? <span id="respJacobi"></span></p>
+	<p>Converge para Gauss-Seidel? <span id="respSeidel"></span></p>
 </div>
 
-<button id="step">
+<button id="convergencia">
+	Teste de Convergência
+</button>
+<button id="step" disabled="disabled">
 	Passo
 </button>
-<button id="solve">
+<button id="solve" disabled="disabled">
 	Resolver
 </button>
+
+<hr></hr>
+<div id="testes" style="display:none;">
+	<table border="1" style="float:left; margin-right: 10px;" id="tableJacobi">
+		<tr><th colspan="7">Gauss-Jacobi</th></tr>
+		<tr>
+			<th>Iteração</th>
+			<th>X</th>
+			<th>Y</th>
+			<th>Z</th>
+			<th>erro X</th>
+			<th>erro Y</th>
+			<th>erro Z</th>
+		</tr>
+	</table>
+	<table border="1" id="tableSeidel">
+		<tr><th colspan="7">Gauss-Seidel</th></tr>
+		<tr>
+			<th>Iteração</th>
+			<th>X</th>
+			<th>Y</th>
+			<th>Z</th>
+			<th>erro X</th>
+			<th>erro Y</th>
+			<th>erro Z</th>
+		</tr>
+	</table>
+</div>
 
 <script src="jquery-3.1.1.min.js"></script>
 <script src="solver.js"></script>
