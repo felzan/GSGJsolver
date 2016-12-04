@@ -1,94 +1,176 @@
-$(document).ready(function(){
+(function() {
 
-var itera = 0;
+	var matrizOriginal = [];
+	var k = 0;
 
- 
-	$('#step').click(function(){
-	$('#iteracao').text(++itera);
+	var matrizAuxJacobi = [];
+	matrizAuxJacobi[k] = [0, 0, 0];
+	var matrizErroJacobi = [];
+	matrizErroJacobi[k] = [0, 0, 0];
 
-	var x1 = $('#x1').val();
-	var y1 = $('#y1').val();
-	var z1 = $('#z1').val();
+	var matrizAuxSeidel = [];
+	matrizAuxSeidel[k] = [0, 0, 0];
+	var matrizErroSeidel = [];
+	matrizErroSeidel[k] = [0, 0, 0];
 
-	var x2 = $('#x2').val();
-	var y2 = $('#y2').val();
-	var z2 = $('#z2').val();
+	$(document).ready(function(){
 
-	var x3 = $('#x3').val();
-	var y3 = $('#y3').val();
-	var z3 = $('#z3').val();
+		var testarJacobi = false;
+		var testarSeidel = false;
 
-	var e1 = $('#e1').val();
-	var e2 = $('#e2').val();
-	var e3 = $('#e3').val();
+		$('#step').on('click', function(){
+			
+			if (testarJacobi) {
+				gaussJacobi();
+				// gaussSeidel();
+			}
+			if (testarSeidel) {
+				// gaussSeidel();
+			}
 
-	var sbx = $('#sbx').text();
-	var sby = $('#sby').text();
-	var sbz = $('#sbz').text();
+		});
 
-	var jbx = $('#jbx').text();
-	var jby = $('#jby').text();
-	var jbz = $('#jbz').text();
+		$('#convergencia').click(function(){
 
-	// console.log(x1);
-	// var tab = [];
-	var va = [];
-	// tab.push([x1, y1, z1]);
-	// tab.push([x2, y2, z2]);
-	// tab.push([x3, y3, z3]);
+			matrizOriginal[0] = [parseInt($('#x1').val()), parseInt($('#y1').val()), parseInt($('#z1').val())];
+			matrizOriginal[1] = [parseInt($('#x2').val()), parseInt($('#y2').val()), parseInt($('#z2').val())];
+			matrizOriginal[2] = [parseInt($('#x3').val()), parseInt($('#y3').val()), parseInt($('#z3').val())];
+			console.log(matrizOriginal);
 
-	var erroaceitavel = $('#erroaceitavel').val();
+			if (convergenciaLinha() || convergenciaColuna()) {
 
-	//GJ
-	va[0] = (e1 - y1*jby - z1*jbz)/x1;
-	va[1] = (e2 - x2*jbx - z2*jbz)/y2;
-	va[2] = (e3 - y3*jby - x3*jbx)/z3;
+				$('#step').prop('disabled','');
+				$('#solve').prop('disabled','');
+				
+				$('#testeConv').css('display','block');
+				$('#testes').css('display','block');
+				$('#tableJacobi').css('color','#000');
 
-	//GS
-	va[3] = (e1 - y1*((va[4]) ? va[4] : sby) - z1*((va[5]) ? va[5] : sbz))/x1;
-	va[4] = (e2 - x2*va[3] - z2*sbz)/y2;
-	va[5] = (e3 - y3*va[4] - x3*va[3])/z3;
+				$('#respJacobi').text('Sim');
+				$('#respSeidel').text('Sim');
 
-	$('#jbx').text(va[0]);
-	$('#jby').text(va[1]);
-	$('#jbz').text(va[2]);
+				testarJacobi = true;
+				testarSeidel = true;
 
+				return true;
+			}
 
-	$('#sbx').text(va[3]);
-	$('#sby').text(va[4]);
-	$('#sbz').text(va[5]);
+			//TESTE DE SASSENFELD SÓ SE APLICA AO GAUSS SEIDEL
+			if (convergenciaSassenfeld()) {
 
-	if($('#valordeXJ').text() == "?")
-	if(Math.abs(Math.abs(Math.round(va[0]) - va[0])) <= erroaceitavel){
-		$('#valordeXJ').text(Math.round(va[0]));
+				$('#step').prop('disabled','');
+				$('#solve').prop('disabled','');
+
+				$('#testeConv').css('display','block');
+				$('#testes').css('display','block');
+				$('#tableJacobi').css('color','#999');
+
+				$('#respJacobi').text('Não');
+				$('#respSeidel').text('Sim');
+
+				testarJacobi = false;
+				testarSeidel = true;
+
+				return true;
+			}
+
+			alert('Sistema não converge!');
+			return false;
+
+	
+		});
+	});
+
+	function gaussJacobi () {
+		if (k == 0) {
+			var x = (parseInt($('#e1').val())) / matrizOriginal[0][0];
+			var y = (parseInt($('#e2').val())) / matrizOriginal[1][1];
+			var z = (parseInt($('#e3').val())) / matrizOriginal[2][2];
+
+			matrizAuxJacobi[k] = [parseFloat(x.toFixed(6)),parseFloat(y.toFixed(6)),parseFloat(z.toFixed(6))];
+			matrizErroJacobi[k] = [Math.abs(x),Math.abs(y),Math.abs(z)];
+		} else {
+			var x = (parseInt($('#e1').val()) + (matrizOriginal[0][1] * matrizAuxJacobi[k-1][1] * -1) + (matrizOriginal[0][2] * matrizAuxJacobi[k-1][2] * -1)) / matrizOriginal[0][0];
+			console.log("(" + (parseInt($('#e1').val()) + " + " + (matrizOriginal[0][1] * matrizAuxJacobi[k-1][1] * -1) + " + " + (matrizOriginal[0][2] * matrizAuxJacobi[k-1][2] * -1)) + " / " + matrizOriginal[0][0] + " = " + x);
+			var y = (parseInt($('#e2').val()) + (matrizOriginal[1][0] * matrizAuxJacobi[k-1][0] * -1) + (matrizOriginal[1][2] * matrizAuxJacobi[k-1][2] * -1)) / matrizOriginal[1][1];
+			var z = (parseInt($('#e3').val()) + (matrizOriginal[2][0] * matrizAuxJacobi[k-1][0] * -1) + (matrizOriginal[2][1] * matrizAuxJacobi[k-1][1] * -1)) / matrizOriginal[2][2];
+			matrizAuxJacobi[k] = [parseFloat(x.toFixed(6)),parseFloat(y.toFixed(6)),parseFloat(z.toFixed(6))];
+			matrizErroJacobi[k] = [
+				(Math.abs(x) - matrizErroJacobi[k-1][0]),
+				(Math.abs(y) - matrizErroJacobi[k-1][1]),
+				(Math.abs(z) - matrizErroJacobi[k-1][2])
+			];
+		}
+
+		imprimeNaTabela(k, '#tableJacobi');
+		k++;
 	}
 
-	if($('#valordeYJ').text() == "?")
-	if(Math.abs(Math.abs(Math.round(va[1]) - va[1])) <= erroaceitavel){
-		$('#valordeYJ').text(Math.round(va[1]));
+	function convergenciaLinha () {
+
+		var alfa1 = (Math.abs(matrizOriginal[0][1]) + Math.abs(matrizOriginal[0][2])) / Math.abs(matrizOriginal[0][0]);
+		if (alfa1 >= 1) {
+			return false;
+		}
+
+		var alfa2 = (Math.abs(matrizOriginal[1][0]) + Math.abs(matrizOriginal[1][2])) / Math.abs(matrizOriginal[1][1]);
+		if (alfa2 >= 1) {
+			return false;
+		}
+
+		var alfa3 = (Math.abs(matrizOriginal[2][0]) + Math.abs(matrizOriginal[2][1])) / Math.abs(matrizOriginal[2][2]);
+		if (alfa3 >= 1) {
+			return false;
+		}
+
+		return true;
+
 	}
 
-	if($('#valordeZJ').text() == "?")
-	if(Math.abs(Math.abs(Math.round(va[2]) - va[2])) <= erroaceitavel){
-		$('#valordeZJ').text(Math.round(va[2]));
+	function convergenciaColuna () {
+
+		var alfa1 = (Math.abs(matrizOriginal[1][0]) + Math.abs(matrizOriginal[2][0])) / Math.abs(matrizOriginal[0][0]);
+		if (alfa1 >= 1) {
+			return false;
+		}
+
+		var alfa2 = (Math.abs(matrizOriginal[0][1]) + Math.abs(matrizOriginal[2][1])) / Math.abs(matrizOriginal[1][1]);
+		if (alfa2 >= 1) {
+			return false;
+		}
+
+		var alfa3 = (Math.abs(matrizOriginal[0][2]) + Math.abs(matrizOriginal[1][2])) / Math.abs(matrizOriginal[2][2]);
+		if (alfa3 >= 1) {
+			return false;
+		}
+
+		return true;
 	}
 
-	//
-	if($('#valordeXS').text() == "?")
-	if(Math.abs(Math.abs(Math.round(va[3]) - va[3])) <= erroaceitavel){
-		$('#valordeXS').text(Math.round(va[3]));
+	function convergenciaSassenfeld () {
+
+		var beta1 = (Math.abs(matrizOriginal[0][1]) + Math.abs(matrizOriginal[0][2])) / Math.abs(matrizOriginal[0][0]);
+		if (beta1 >= 1) {
+			return false;
+		}
+
+		var beta2 = ((Math.abs(matrizOriginal[1][0])*beta1) + Math.abs(matrizOriginal[1][2])) / Math.abs(matrizOriginal[1][1]);
+		if (beta2 >= 1) {
+			return false;
+		}
+
+		var beta3 = ((Math.abs(matrizOriginal[2][0])*beta1) + (Math.abs(matrizOriginal[2][1]*beta2))) / Math.abs(matrizOriginal[2][2]);
+		if (beta3 >= 1) {
+			return false;
+		}
+
+		return true;
 	}
 
-	if($('#valordeYS').text() == "?")
-	if(Math.abs(Math.abs(Math.round(va[4]) - va[4])) <= erroaceitavel){
-		$('#valordeYS').text(Math.round(va[4]));
+	function imprimeNaTabela(i, tabela) {
+		$(tabela + " tr:last").after("<tr><td>"+i+"</td><td>"+matrizAuxJacobi[i][0]+"</td><td>"+matrizAuxJacobi[i][1]+"</td><td>"+matrizAuxJacobi[i][2]+"</td><td>"+matrizErroJacobi[i][0]+"</td><td>"+matrizErroJacobi[i][0]+"</td><td>"+matrizErroJacobi[i][0]+"</td></tr>");
 	}
 
-	if($('#valordeZS').text() == "?")
-	if(Math.abs(Math.abs(Math.round(va[5]) - va[5])) <= erroaceitavel){
-		$('#valordeZS').text(Math.round(va[5]));
-	}
-});
-//
 
-});
+})();
+
