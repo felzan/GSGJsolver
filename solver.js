@@ -1,17 +1,15 @@
 (function() {
 
 	var matrizOriginal = [];
-	var k = 0;
+	var resultFuncoes  = [];
+	
+	var kJacobi = 0;
+	var ultimoValorJacobi = [0, 0, 0];
+	var ultimoValorErroJacobi = [0, 0, 0];
 
-	var matrizAuxJacobi = [];
-	matrizAuxJacobi[k] = [0, 0, 0];
-	var matrizErroJacobi = [];
-	matrizErroJacobi[k] = [0, 0, 0];
-
-	var matrizAuxSeidel = [];
-	matrizAuxSeidel[k] = [0, 0, 0];
-	var matrizErroSeidel = [];
-	matrizErroSeidel[k] = [0, 0, 0];
+	var kSeidel = 0;
+	var ultimoValorSeidel = [0, 0, 0];
+	var ultimoValorErroSeidel = [0, 0, 0];
 
 	$(document).ready(function(){
 
@@ -22,10 +20,9 @@
 			
 			if (testarJacobi) {
 				gaussJacobi();
-				// gaussSeidel();
-			}
-			if (testarSeidel) {
-				// gaussSeidel();
+				gaussSeidel();
+			} else if (testarSeidel) {
+				gaussSeidel();
 			}
 
 		});
@@ -36,6 +33,8 @@
 			matrizOriginal[1] = [parseInt($('#x2').val()), parseInt($('#y2').val()), parseInt($('#z2').val())];
 			matrizOriginal[2] = [parseInt($('#x3').val()), parseInt($('#y3').val()), parseInt($('#z3').val())];
 			console.log(matrizOriginal);
+
+			resultFuncoes = [parseInt($('#e1').val()), parseInt($('#e2').val()), parseInt($('#e3').val())];
 
 			if (convergenciaLinha() || convergenciaColuna()) {
 
@@ -82,28 +81,59 @@
 	});
 
 	function gaussJacobi () {
-		if (k == 0) {
-			var x = (parseInt($('#e1').val())) / matrizOriginal[0][0];
-			var y = (parseInt($('#e2').val())) / matrizOriginal[1][1];
-			var z = (parseInt($('#e3').val())) / matrizOriginal[2][2];
+		if (kJacobi == 0) {
+			var x = resultFuncoes[0] / matrizOriginal[0][0];
+			var y = resultFuncoes[1] / matrizOriginal[1][1];
+			var z = resultFuncoes[2] / matrizOriginal[2][2];
 
-			matrizAuxJacobi[k] = [parseFloat(x.toFixed(6)),parseFloat(y.toFixed(6)),parseFloat(z.toFixed(6))];
-			matrizErroJacobi[k] = [Math.abs(x),Math.abs(y),Math.abs(z)];
+			ultimoValorJacobi = [parseFloat(x.toFixed(6)),parseFloat(y.toFixed(6)),parseFloat(z.toFixed(6))];
+			ultimoValorErroJacobi = [Math.abs(x), Math.abs(y), Math.abs(z)];
+			console.log("x = (" + resultFuncoes[0] + " + " + (matrizOriginal[0][1] * ultimoValorJacobi[1] * -1) + " + " + (matrizOriginal[0][2] * ultimoValorJacobi[2] * -1) + " / " + matrizOriginal[0][0] + " = " + x);
+			console.log("y = (" + resultFuncoes[1] + " + " + (matrizOriginal[1][0] * ultimoValorJacobi[0] * -1) + " + " + (matrizOriginal[1][2] * ultimoValorJacobi[2] * -1) + " / " + matrizOriginal[1][1] + " = " + y);
+			console.log("z = (" + resultFuncoes[2] + " + " + (matrizOriginal[2][0] * ultimoValorJacobi[0] * -1) + " + " + (matrizOriginal[2][1] * ultimoValorJacobi[1] * -1) + " / " + matrizOriginal[2][2] + " = " + z);
 		} else {
-			var x = (parseInt($('#e1').val()) + (matrizOriginal[0][1] * matrizAuxJacobi[k-1][1] * -1) + (matrizOriginal[0][2] * matrizAuxJacobi[k-1][2] * -1)) / matrizOriginal[0][0];
-			console.log("(" + (parseInt($('#e1').val()) + " + " + (matrizOriginal[0][1] * matrizAuxJacobi[k-1][1] * -1) + " + " + (matrizOriginal[0][2] * matrizAuxJacobi[k-1][2] * -1)) + " / " + matrizOriginal[0][0] + " = " + x);
-			var y = (parseInt($('#e2').val()) + (matrizOriginal[1][0] * matrizAuxJacobi[k-1][0] * -1) + (matrizOriginal[1][2] * matrizAuxJacobi[k-1][2] * -1)) / matrizOriginal[1][1];
-			var z = (parseInt($('#e3').val()) + (matrizOriginal[2][0] * matrizAuxJacobi[k-1][0] * -1) + (matrizOriginal[2][1] * matrizAuxJacobi[k-1][1] * -1)) / matrizOriginal[2][2];
-			matrizAuxJacobi[k] = [parseFloat(x.toFixed(6)),parseFloat(y.toFixed(6)),parseFloat(z.toFixed(6))];
-			matrizErroJacobi[k] = [
-				(Math.abs(x) - matrizErroJacobi[k-1][0]),
-				(Math.abs(y) - matrizErroJacobi[k-1][1]),
-				(Math.abs(z) - matrizErroJacobi[k-1][2])
-			];
+			var x = (resultFuncoes[0] + (matrizOriginal[0][1] * ultimoValorJacobi[1] * -1) + (matrizOriginal[0][2] * ultimoValorJacobi[2] * -1)) / matrizOriginal[0][0];
+			var y = (resultFuncoes[1] + (matrizOriginal[1][0] * ultimoValorJacobi[0] * -1) + (matrizOriginal[1][2] * ultimoValorJacobi[2] * -1)) / matrizOriginal[1][1];
+			var z = (resultFuncoes[2] + (matrizOriginal[2][0] * ultimoValorJacobi[0] * -1) + (matrizOriginal[2][1] * ultimoValorJacobi[1] * -1)) / matrizOriginal[2][2];
+
+			console.log("x = (" + resultFuncoes[0] + " + " + (matrizOriginal[0][1] * ultimoValorJacobi[1] * -1) + " + " + (matrizOriginal[0][2] * ultimoValorJacobi[2] * -1) + " / " + matrizOriginal[0][0] + " = " + x);
+			console.log("y = (" + resultFuncoes[1] + " + " + (matrizOriginal[1][0] * ultimoValorJacobi[0] * -1) + " + " + (matrizOriginal[1][2] * ultimoValorJacobi[2] * -1) + " / " + matrizOriginal[1][1] + " = " + y);
+			console.log("z = (" + resultFuncoes[2] + " + " + (matrizOriginal[2][0] * ultimoValorJacobi[0] * -1) + " + " + (matrizOriginal[2][1] * ultimoValorJacobi[1] * -1) + " / " + matrizOriginal[2][2] + " = " + z);
+			
+			ultimoValorJacobi = [parseFloat(x.toFixed(6)), parseFloat(y.toFixed(6)), parseFloat(z.toFixed(6))];
+			ultimoValorErroJacobi = [(Math.abs(x) - ultimoValorErroJacobi[0]),	(Math.abs(y) - ultimoValorErroJacobi[1]), (Math.abs(z) - ultimoValorErroJacobi[2])];
 		}
 
-		imprimeNaTabela(k, '#tableJacobi');
-		k++;
+		imprimeNaTabela(kJacobi, '#tableJacobi', ultimoValorJacobi, ultimoValorErroJacobi);
+		kJacobi++;
+	}
+
+	function gaussSeidel () {
+		if (kSeidel == 0) {
+			var x = resultFuncoes[0] / matrizOriginal[0][0];
+			var y = (resultFuncoes[1] + (matrizOriginal[1][0] * parseFloat(x.toFixed(6)) * -1)) / matrizOriginal[1][1];
+			var z = (resultFuncoes[2] + (matrizOriginal[2][0] * parseFloat(x.toFixed(6)) * -1) + (matrizOriginal[2][1] * parseFloat(y.toFixed(6)) * -1)) / matrizOriginal[2][2];
+
+			ultimoValorSeidel = [parseFloat(x.toFixed(6)),parseFloat(y.toFixed(6)),parseFloat(z.toFixed(6))];
+			ultimoValorErroSeidel = [Math.abs(x), Math.abs(y), Math.abs(z)];
+			console.log("x = (" + resultFuncoes[0] + " + " + (matrizOriginal[0][1] * ultimoValorSeidel[1] * -1) + " + " + (matrizOriginal[0][2] * ultimoValorSeidel[2] * -1) + " / " + matrizOriginal[0][0] + " = " + x);
+			console.log("y = (" + resultFuncoes[1] + " + " + (matrizOriginal[1][0] * ultimoValorSeidel[0] * -1) + " + " + (matrizOriginal[1][2] * ultimoValorSeidel[2] * -1) + " / " + matrizOriginal[1][1] + " = " + y);
+			console.log("z = (" + resultFuncoes[2] + " + " + (matrizOriginal[2][0] * ultimoValorSeidel[0] * -1) + " + " + (matrizOriginal[2][1] * ultimoValorSeidel[1] * -1) + " / " + matrizOriginal[2][2] + " = " + z);
+		} else {
+			var x = (resultFuncoes[0] + (matrizOriginal[0][1] * ultimoValorSeidel[1] * -1) + (matrizOriginal[0][2] * ultimoValorSeidel[2] * -1)) / matrizOriginal[0][0];
+			var y = (resultFuncoes[1] + (matrizOriginal[1][0] * parseFloat(x.toFixed(6)) * -1) + (matrizOriginal[1][2] * ultimoValorSeidel[2] * -1)) / matrizOriginal[1][1];
+			var z = (resultFuncoes[2] + (matrizOriginal[2][0] * parseFloat(x.toFixed(6)) * -1) + (matrizOriginal[2][1] * parseFloat(y.toFixed(6)) * -1)) / matrizOriginal[2][2];
+
+			console.log("x = (" + resultFuncoes[0] + " + " + (matrizOriginal[0][1] * ultimoValorSeidel[1] * -1) + " + " + (matrizOriginal[0][2] * ultimoValorSeidel[2] * -1) + " / " + matrizOriginal[0][0] + " = " + x);
+			console.log("y = (" + resultFuncoes[1] + " + " + (matrizOriginal[1][0] * ultimoValorSeidel[0] * -1) + " + " + (matrizOriginal[1][2] * ultimoValorSeidel[2] * -1) + " / " + matrizOriginal[1][1] + " = " + y);
+			console.log("z = (" + resultFuncoes[2] + " + " + (matrizOriginal[2][0] * ultimoValorSeidel[0] * -1) + " + " + (matrizOriginal[2][1] * ultimoValorSeidel[1] * -1) + " / " + matrizOriginal[2][2] + " = " + z);
+			
+			ultimoValorSeidel = [parseFloat(x.toFixed(6)), parseFloat(y.toFixed(6)), parseFloat(z.toFixed(6))];
+			ultimoValorErroSeidel = [(Math.abs(x) - ultimoValorErroSeidel[0]),	(Math.abs(y) - ultimoValorErroSeidel[1]), (Math.abs(z) - ultimoValorErroSeidel[2])];
+		}
+
+		imprimeNaTabela(kSeidel, '#tableSeidel', ultimoValorSeidel, ultimoValorErroSeidel);
+		kSeidel++;
 	}
 
 	function convergenciaLinha () {
@@ -167,8 +197,8 @@
 		return true;
 	}
 
-	function imprimeNaTabela(i, tabela) {
-		$(tabela + " tr:last").after("<tr><td>"+i+"</td><td>"+matrizAuxJacobi[i][0]+"</td><td>"+matrizAuxJacobi[i][1]+"</td><td>"+matrizAuxJacobi[i][2]+"</td><td>"+matrizErroJacobi[i][0]+"</td><td>"+matrizErroJacobi[i][0]+"</td><td>"+matrizErroJacobi[i][0]+"</td></tr>");
+	function imprimeNaTabela(i, tabela, vetorValores, vetorErros) {
+		$(tabela + " tr:last").after("<tr><td>"+i+"</td><td>"+vetorValores[0]+"</td><td>"+vetorValores[1]+"</td><td>"+vetorValores[2]+"</td><td>"+vetorErros[0]+"</td><td>"+vetorErros[1]+"</td><td>"+vetorErros[2]+"</td></tr>");
 	}
 
 
