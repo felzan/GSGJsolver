@@ -37,6 +37,8 @@
 <br>
 
 Erro aceitável:<input type="text" value="0.0005" name="erroaceitavel" id="erroaceitavel">
+<br><br>
+Quantidade Máxima de iterações:<input type="number" value="100" name="numeroiteracoes" id="numeroiteracoes">
 <br>
 <hr></hr>
 
@@ -59,6 +61,7 @@ Erro aceitável:<input type="text" value="0.0005" name="erroaceitavel" id="erroa
 <hr></hr>
 <div id="testes" style="display:none;">
 	<table border="1" style="float:left; margin-right: 10px;" id="tableJacobi">
+		<thead>
 		<tr><th colspan="7">Gauss-Jacobi</th></tr>
 		<tr>
 			<th>Iteração</th>
@@ -69,8 +72,11 @@ Erro aceitável:<input type="text" value="0.0005" name="erroaceitavel" id="erroa
 			<th>erro Y</th>
 			<th>erro Z</th>
 		</tr>
+		</thead>
+		<tbody class="corpoTabela"></tbody>
 	</table>
 	<table border="1" id="tableSeidel">
+		<thead>
 		<tr><th colspan="7">Gauss-Seidel</th></tr>
 		<tr>
 			<th>Iteração</th>
@@ -81,6 +87,8 @@ Erro aceitável:<input type="text" value="0.0005" name="erroaceitavel" id="erroa
 			<th>erro Y</th>
 			<th>erro Z</th>
 		</tr>
+		</thead>
+		<tbody class="corpoTabela"></tbody>
 	</table>
 </div>
 

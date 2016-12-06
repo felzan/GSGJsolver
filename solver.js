@@ -4,12 +4,13 @@
 	var resultFuncoes  = [];
 	
 	var kJacobi = 0;
-	var ultimoValorJacobi = [0, 0, 0];
-	var ultimoValorErroJacobi = [0, 0, 0];
-
 	var kSeidel = 0;
+	var numeroiteracoes = 0;
+
+	var ultimoValorJacobi = [0, 0, 0];
 	var ultimoValorSeidel = [0, 0, 0];
-	var ultimoValorErroSeidel = [0, 0, 0];
+
+
 
 	$(document).ready(function(){
 
@@ -32,9 +33,17 @@
 			matrizOriginal[0] = [parseInt($('#x1').val()), parseInt($('#y1').val()), parseInt($('#z1').val())];
 			matrizOriginal[1] = [parseInt($('#x2').val()), parseInt($('#y2').val()), parseInt($('#z2').val())];
 			matrizOriginal[2] = [parseInt($('#x3').val()), parseInt($('#y3').val()), parseInt($('#z3').val())];
-			console.log(matrizOriginal);
 
 			resultFuncoes = [parseInt($('#e1').val()), parseInt($('#e2').val()), parseInt($('#e3').val())];
+			erroAceitavel = parseFloat($('#erroaceitavel').val());
+
+			kJacobi = 0;
+			kSeidel = 0;
+
+			numeroiteracoes = parseInt($('#numeroiteracoes').val());
+
+			$('#tableJacobi .corpoTabela').empty();
+			$('#tableSeidel .corpoTabela').empty();
 
 			if (convergenciaLinha() || convergenciaColuna()) {
 
@@ -82,16 +91,17 @@
 
 	function gaussJacobi () {
 		if (kJacobi == 0) {
+			
 			var x = resultFuncoes[0] / matrizOriginal[0][0];
 			var y = resultFuncoes[1] / matrizOriginal[1][1];
 			var z = resultFuncoes[2] / matrizOriginal[2][2];
 
+			var valorErro = [(Math.abs(x) - ultimoValorJacobi[0]),	(Math.abs(y) - ultimoValorJacobi[1]), (Math.abs(z) - ultimoValorJacobi[2])];
 			ultimoValorJacobi = [parseFloat(x.toFixed(6)),parseFloat(y.toFixed(6)),parseFloat(z.toFixed(6))];
-			ultimoValorErroJacobi = [Math.abs(x), Math.abs(y), Math.abs(z)];
-			console.log("x = (" + resultFuncoes[0] + " + " + (matrizOriginal[0][1] * ultimoValorJacobi[1] * -1) + " + " + (matrizOriginal[0][2] * ultimoValorJacobi[2] * -1) + " / " + matrizOriginal[0][0] + " = " + x);
-			console.log("y = (" + resultFuncoes[1] + " + " + (matrizOriginal[1][0] * ultimoValorJacobi[0] * -1) + " + " + (matrizOriginal[1][2] * ultimoValorJacobi[2] * -1) + " / " + matrizOriginal[1][1] + " = " + y);
-			console.log("z = (" + resultFuncoes[2] + " + " + (matrizOriginal[2][0] * ultimoValorJacobi[0] * -1) + " + " + (matrizOriginal[2][1] * ultimoValorJacobi[1] * -1) + " / " + matrizOriginal[2][2] + " = " + z);
+
+			imprimeNaTabela(kJacobi, '#tableJacobi', ultimoValorJacobi, valorErro);
 		} else {
+
 			var x = (resultFuncoes[0] + (matrizOriginal[0][1] * ultimoValorJacobi[1] * -1) + (matrizOriginal[0][2] * ultimoValorJacobi[2] * -1)) / matrizOriginal[0][0];
 			var y = (resultFuncoes[1] + (matrizOriginal[1][0] * ultimoValorJacobi[0] * -1) + (matrizOriginal[1][2] * ultimoValorJacobi[2] * -1)) / matrizOriginal[1][1];
 			var z = (resultFuncoes[2] + (matrizOriginal[2][0] * ultimoValorJacobi[0] * -1) + (matrizOriginal[2][1] * ultimoValorJacobi[1] * -1)) / matrizOriginal[2][2];
@@ -101,10 +111,11 @@
 			console.log("z = (" + resultFuncoes[2] + " + " + (matrizOriginal[2][0] * ultimoValorJacobi[0] * -1) + " + " + (matrizOriginal[2][1] * ultimoValorJacobi[1] * -1) + " / " + matrizOriginal[2][2] + " = " + z);
 			
 			ultimoValorJacobi = [parseFloat(x.toFixed(6)), parseFloat(y.toFixed(6)), parseFloat(z.toFixed(6))];
-			ultimoValorErroJacobi = [(Math.abs(x) - ultimoValorErroJacobi[0]),	(Math.abs(y) - ultimoValorErroJacobi[1]), (Math.abs(z) - ultimoValorErroJacobi[2])];
+			var valorErro = [(Math.abs(x) - ultimoValorJacobi[0]),	(Math.abs(y) - ultimoValorJacobi[1]), (Math.abs(z) - ultimoValorJacobi[2])];
+			
+			imprimeNaTabela(kJacobi, '#tableJacobi', ultimoValorJacobi, valorErro);
 		}
 
-		imprimeNaTabela(kJacobi, '#tableJacobi', ultimoValorJacobi, ultimoValorErroJacobi);
 		kJacobi++;
 	}
 
@@ -114,25 +125,22 @@
 			var y = (resultFuncoes[1] + (matrizOriginal[1][0] * parseFloat(x.toFixed(6)) * -1)) / matrizOriginal[1][1];
 			var z = (resultFuncoes[2] + (matrizOriginal[2][0] * parseFloat(x.toFixed(6)) * -1) + (matrizOriginal[2][1] * parseFloat(y.toFixed(6)) * -1)) / matrizOriginal[2][2];
 
+			var valorErro = [(Math.abs(x) - ultimoValorSeidel[0]),	(Math.abs(y) - ultimoValorSeidel[1]), (Math.abs(z) - ultimoValorSeidel[2])];
 			ultimoValorSeidel = [parseFloat(x.toFixed(6)),parseFloat(y.toFixed(6)),parseFloat(z.toFixed(6))];
-			ultimoValorErroSeidel = [Math.abs(x), Math.abs(y), Math.abs(z)];
-			console.log("x = (" + resultFuncoes[0] + " + " + (matrizOriginal[0][1] * ultimoValorSeidel[1] * -1) + " + " + (matrizOriginal[0][2] * ultimoValorSeidel[2] * -1) + " / " + matrizOriginal[0][0] + " = " + x);
-			console.log("y = (" + resultFuncoes[1] + " + " + (matrizOriginal[1][0] * ultimoValorSeidel[0] * -1) + " + " + (matrizOriginal[1][2] * ultimoValorSeidel[2] * -1) + " / " + matrizOriginal[1][1] + " = " + y);
-			console.log("z = (" + resultFuncoes[2] + " + " + (matrizOriginal[2][0] * ultimoValorSeidel[0] * -1) + " + " + (matrizOriginal[2][1] * ultimoValorSeidel[1] * -1) + " / " + matrizOriginal[2][2] + " = " + z);
+
+			imprimeNaTabela(kSeidel, '#tableSeidel', ultimoValorSeidel, valorErro);
 		} else {
 			var x = (resultFuncoes[0] + (matrizOriginal[0][1] * ultimoValorSeidel[1] * -1) + (matrizOriginal[0][2] * ultimoValorSeidel[2] * -1)) / matrizOriginal[0][0];
 			var y = (resultFuncoes[1] + (matrizOriginal[1][0] * parseFloat(x.toFixed(6)) * -1) + (matrizOriginal[1][2] * ultimoValorSeidel[2] * -1)) / matrizOriginal[1][1];
 			var z = (resultFuncoes[2] + (matrizOriginal[2][0] * parseFloat(x.toFixed(6)) * -1) + (matrizOriginal[2][1] * parseFloat(y.toFixed(6)) * -1)) / matrizOriginal[2][2];
-
-			console.log("x = (" + resultFuncoes[0] + " + " + (matrizOriginal[0][1] * ultimoValorSeidel[1] * -1) + " + " + (matrizOriginal[0][2] * ultimoValorSeidel[2] * -1) + " / " + matrizOriginal[0][0] + " = " + x);
-			console.log("y = (" + resultFuncoes[1] + " + " + (matrizOriginal[1][0] * ultimoValorSeidel[0] * -1) + " + " + (matrizOriginal[1][2] * ultimoValorSeidel[2] * -1) + " / " + matrizOriginal[1][1] + " = " + y);
-			console.log("z = (" + resultFuncoes[2] + " + " + (matrizOriginal[2][0] * ultimoValorSeidel[0] * -1) + " + " + (matrizOriginal[2][1] * ultimoValorSeidel[1] * -1) + " / " + matrizOriginal[2][2] + " = " + z);
-			
+		
 			ultimoValorSeidel = [parseFloat(x.toFixed(6)), parseFloat(y.toFixed(6)), parseFloat(z.toFixed(6))];
-			ultimoValorErroSeidel = [(Math.abs(x) - ultimoValorErroSeidel[0]),	(Math.abs(y) - ultimoValorErroSeidel[1]), (Math.abs(z) - ultimoValorErroSeidel[2])];
+			var valorErro = [(Math.abs(x) - ultimoValorSeidel[0]),	(Math.abs(y) - ultimoValorSeidel[1]), (Math.abs(z) - ultimoValorSeidel[2])];
+		
+
+			imprimeNaTabela(kSeidel, '#tableSeidel', ultimoValorSeidel, valorErro);
 		}
 
-		imprimeNaTabela(kSeidel, '#tableSeidel', ultimoValorSeidel, ultimoValorErroSeidel);
 		kSeidel++;
 	}
 
@@ -198,7 +206,13 @@
 	}
 
 	function imprimeNaTabela(i, tabela, vetorValores, vetorErros) {
-		$(tabela + " tr:last").after("<tr><td>"+i+"</td><td>"+vetorValores[0]+"</td><td>"+vetorValores[1]+"</td><td>"+vetorValores[2]+"</td><td>"+vetorErros[0]+"</td><td>"+vetorErros[1]+"</td><td>"+vetorErros[2]+"</td></tr>");
+
+		if (i == 0) {
+
+			$(tabela + " .corpoTabela").html("<tr><td>"+i+"</td><td>"+vetorValores[0]+"</td><td>"+vetorValores[1]+"</td><td>"+vetorValores[2]+"</td><td>"+vetorErros[0]+"</td><td>"+vetorErros[1]+"</td><td>"+vetorErros[2]+"</td></tr>");
+		} else {			
+			$(tabela + " .corpoTabela tr:last").after("<tr><td>"+i+"</td><td>"+vetorValores[0]+"</td><td>"+vetorValores[1]+"</td><td>"+vetorValores[2]+"</td><td>"+vetorErros[0]+"</td><td>"+vetorErros[1]+"</td><td>"+vetorErros[2]+"</td></tr>");			
+		}
 	}
 
 
