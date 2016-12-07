@@ -45,18 +45,21 @@
 		});
 
 		$('#solve').on('click', function() {
+			if ( numeroIteracoes > 0 ) {
+				$('#step').attr('disabled', 'disabled');
 
-			$('#step').attr('disabled', 'disabled');
+				for (var i = 0; i < numeroIteracoes; i++) {
+					looping(i);
 
-			for (var i = 0; i < numeroIteracoes; i++) {
-				looping(i);
+					if ((testarJacobi && (!continuarJacobi && !continuarSeidel))) {
+						break;
+					} else if (testarSeidel && !continuarSeidel) {
+						break;
+					}
 
-				if ((testarJacobi && (!continuarJacobi && !continuarSeidel))) {
-					break;
-				} else if (testarSeidel && !continuarSeidel) {
-					break;
 				}
-
+			} else {
+				alert("Por favor, informe um número de iterações");
 			}
 
 		});
@@ -80,6 +83,16 @@
 
 			kJacobi = 0;
 			kSeidel = 0;
+			continuarJacobi = true;
+			confirmBoxJacobi = true;
+			continuarSeidel = true;
+			confirmBoxSeidel = true;
+
+			ultimoValorJacobi = [0, 0, 0];
+			ultimoValorSeidel = [0, 0, 0];
+
+			testarJacobi = false;
+			testarSeidel = false;
 
 			numeroIteracoes = parseInt($('#numeroiteracoes').val());
 

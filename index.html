@@ -8,31 +8,46 @@
 <body>
 
 <table>
-	<tr>
-		<td>X</td>
-		<td>Y</td>
-		<td>Z</td>
-		<td>=</td>
-	</tr>
+	<thead>
+		<tr>
+			<td colspan="4">
+				Segue abaixo algumas informações sobre a utilização da página:<br>
+				<ul>
+					<li>O script não contempla pivotamento automático, por isso, altere o sistema linear manualmente;</li>
+					<li>O script verifica se o sistema linear atende os Critérios de Linha e Coluna, caso não passe em nenhum desses,<br> aplica o Critério de Sassenfeld(Que permite apenas a utilização do Gauss-Seidel);</li>
+					<li>Para utilizar o modo de Iteração Automática, é necessário definir a Quantidade Máxima de Iterações;</li>
+					<li>Sempre que um dos métodos encontrar um valor de erro menor que o valor informado no campo Erro aceitável,<br> irá questionar se você deseja continuar iterando aquele método.<br>Se optar por continuar, o script segue rodando até que atinja a quantidade máxima de iterações.</li>
+				</ul>
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>X</td>
+			<td>Y</td>
+			<td>Z</td>
+			<td>=</td>
+		</tr>
 
-	<tr>
-		<td><input type="number" value="3" name="x1" id="x1"></td>
-		<td><input type="number" value="-1" name="y1" id="y1"></td>
-		<td><input type="number" value="-1" name="z1" id="z1"></td>
-		<td>= <input type="number" value="1" name="e1" id="e1"></td>
-	</tr>
-	<tr>
-		<td><input type="number" value="-1" name="x2" id="x2"></td>
-		<td><input type="number" value="3" name="y2" id="y2"></td>
-		<td><input type="number" value="1" name="z2" id="z2"></td>
-		<td>= <input type="number" value="3" name="e2" id="e2"></td>
-	</tr>
-	<tr>
-		<td><input type="number" value="2" name="x3" id="x3"></td>
-		<td><input type="number" value="1" name="y3" id="y3"></td>
-		<td><input type="number" value="4" name="z3" id="z3"></td>
-		<td>= <input type="number" value="7" name="e3" id="e3"></td>
-	</tr>
+		<tr>
+			<td><input type="number" value="3" name="x1" id="x1"></td>
+			<td><input type="number" value="-1" name="y1" id="y1"></td>
+			<td><input type="number" value="-1" name="z1" id="z1"></td>
+			<td>= <input type="number" value="1" name="e1" id="e1"></td>
+		</tr>
+		<tr>
+			<td><input type="number" value="-1" name="x2" id="x2"></td>
+			<td><input type="number" value="3" name="y2" id="y2"></td>
+			<td><input type="number" value="1" name="z2" id="z2"></td>
+			<td>= <input type="number" value="3" name="e2" id="e2"></td>
+		</tr>
+		<tr>
+			<td><input type="number" value="2" name="x3" id="x3"></td>
+			<td><input type="number" value="1" name="y3" id="y3"></td>
+			<td><input type="number" value="4" name="z3" id="z3"></td>
+			<td>= <input type="number" value="7" name="e3" id="e3"></td>
+		</tr>
+	</tbody>
 </table>
 <br>
 
@@ -52,10 +67,10 @@ Quantidade Máxima de iterações:<input type="number" value="100" name="numeroi
 	Teste de Convergência
 </button>
 <button id="step" disabled="disabled">
-	Passo
+	Passo-a-passo
 </button>
 <button id="solve" disabled="disabled">
-	Resolver
+	Iteração Automática
 </button>
 
 <hr></hr>
