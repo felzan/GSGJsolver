@@ -63,11 +63,11 @@
 
 		$('#convergencia').click(function(){
 
-			matrizOriginal[0] = [parseInt($('#x1').val()), parseInt($('#y1').val()), parseInt($('#z1').val())];
-			matrizOriginal[1] = [parseInt($('#x2').val()), parseInt($('#y2').val()), parseInt($('#z2').val())];
-			matrizOriginal[2] = [parseInt($('#x3').val()), parseInt($('#y3').val()), parseInt($('#z3').val())];
+			matrizOriginal[0] = [Number($('#x1').val()), Number($('#y1').val()), Number($('#z1').val())];
+			matrizOriginal[1] = [Number($('#x2').val()), Number($('#y2').val()), Number($('#z2').val())];
+			matrizOriginal[2] = [Number($('#x3').val()), Number($('#y3').val()), Number($('#z3').val())];
 
-			resultFuncoes = [parseInt($('#e1').val()), parseInt($('#e2').val()), parseInt($('#e3').val())];
+			resultFuncoes = [Number($('#e1').val()), Number($('#e2').val()), Number($('#e3').val())];
 			
 			erroAceitavel = parseFloat($('#erroaceitavel').val());
 			if (isNaN(erroAceitavel)) {
@@ -123,10 +123,27 @@
 				return true;
 			}
 
-			alert('Sistema não converge!');
-			return false;
+			if (confirm("Sistema não converge!\nDeseja continuar mesmo assim?")) {
 
-	
+				$('#step').prop('disabled','');
+				$('#solve').prop('disabled','');
+				
+				$('#testeConv').css('display','block');
+				$('#testes').css('display','block');
+				$('#tableJacobi').css('color','#000');
+
+				$('#respJacobi').text('Sim');
+				$('#respSeidel').text('Sim');
+
+				testarJacobi = true;
+				testarSeidel = true;
+
+				return true;
+
+			} else {
+				return false;
+			}
+
 		});
 	});
 
