@@ -7,7 +7,7 @@
 	var kSeidel = 0;
 
 	var erroAceitavel = 0;
-	var numeroIteracoes = 0;
+	var numeroIteracoes = 100;
 	var casasErro = 6;
 
 	var continuarJacobi = true;
@@ -23,6 +23,15 @@
 
 
 	$(document).ready(function(){
+
+		$('.changeBlock').on('keypress', function() {
+			$('#solve').attr('disabled', 'disabled');
+			$('#step').attr('disabled', 'disabled');
+		});
+		$('.changeBlock').on('change', function() {
+			$('#solve').attr('disabled', 'disabled');
+			$('#step').attr('disabled', 'disabled');
+		});
 
 
 		$('#step').on('click', function(){
@@ -56,10 +65,9 @@
 					} else if (testarSeidel && !continuarSeidel) {
 						break;
 					}
-
 				}
 			} else {
-				alert("Por favor, informe um número de iterações");
+				swal("Quantidade de Máxima de Iterações Inválida","Por favor, informe um número máximo de iterações","warning");
 			}
 
 		});
@@ -71,14 +79,32 @@
 			matrizOriginal[2] = [Number($('#x3').val()), Number($('#y3').val()), Number($('#z3').val())];
 
 			resultFuncoes = [Number($('#e1').val()), Number($('#e2').val()), Number($('#e3').val())];
-			
-			erroAceitavel = parseFloat($('#erroaceitavel').val());
-			if (isNaN(erroAceitavel)) {
-				erroAceitavel = 0;				
-			} else {
-				if ($('#erroaceitavel').val().length > 6) {
-					casasErro = ($('#erroaceitavel').val().length - 2);
+
+			if ($('#erroaceitavel').val().indexOf(',') == -1 && $('#erroaceitavel').val().indexOf('.') == -1) {
+				if ($('#erroaceitavel').val() != "0") {
+					swal("Valor Inválido", "O campo Erro aceitável requer valores maiores ou iguais a 0 (zero) e menores que 1", "warning");
+					return false;
+				} else {
+					erroAceitavel = parseInt($('#erroaceitavel').val());
+					casasErro = 8;
 				}
+			} else {
+				erroAceitavel = parseFloat($('#erroaceitavel').val().replace(',','.'));
+				
+				if (!(erroAceitavel > 0 && erroAceitavel < 1)) {
+					swal("Valor Inválido", "O campo Erro aceitável requer valores maiores ou iguais a 0 (zero) e menores que 1", "warning");
+					return false;
+				}
+
+				var campoErroAceitavel = $('#erroaceitavel').val().replace(',','.');
+				var contCasas = campoErroAceitavel.slice(campoErroAceitavel.indexOf('.')+1);
+
+				if (contCasas.length > 6) {
+					casasErro = contCasas.length;
+				} else {
+					casasErro = 6;
+				}
+
 			}
 
 			kJacobi = 0;
@@ -136,27 +162,39 @@
 				return true;
 			}
 
-			if (confirm("Sistema não converge!\nDeseja continuar mesmo assim?")) {
+			swal({
+				title : "Sistema não converge",
+				text : "Deseja iterar este sistema mesmo assim?",
+				type : "warning",
+				showCancelButton : true,
+				confirmButtonColor : "#aa8800",
+				confirmButtonText : "Sim, pode iterar",
+				cancelButtonColor : "#888",
+				cancelButtonText : "Não, não precisa iterar"
+			}, function(isConfirm) {
+				if (isConfirm) {
 
-				$('#step').prop('disabled','');
-				$('#solve').prop('disabled','');
-				
-				$('#testeConv').css('display','block');
-				$('#testes').css('display','block');
-				$('#tableJacobi').css('color','#000');
+					$('#step').prop('disabled','');
+					$('#solve').prop('disabled','');
+					
+					$('#testeConv').css('display','block');
+					$('#testes').css('display','block');
+					$('#tableJacobi').css('color','#000');
 
-				$('#respJacobi').text('Sim');
-				$('#respSeidel').text('Sim');
+					$('#respJacobi').text('Não');
+					$('#respSeidel').text('Não');
 
-				testarJacobi = true;
-				testarSeidel = true;
+					testarJacobi = true;
+					testarSeidel = true;
 
-				return true;
+					return true;
 
-			} else {
-				return false;
-			}
-
+				} else {
+					$('#step').prop('disabled','disabled');
+					$('#solve').prop('disabled','disabled');
+					return false;
+				}
+			});
 		});
 	});
 
@@ -176,7 +214,7 @@
 					return true;
 				}
 			}
-		},100 * i);
+		},50 * i);
 	}
 
 	function gaussJacobi (index, iterar) {
@@ -204,9 +242,9 @@
 
 			valorErro = [e1, e2, e3];
 
-			ultimoValorJacobi = [parseFloat(x.toFixed(6)),parseFloat(y.toFixed(6)),parseFloat(z.toFixed(6))];
+			ultimoValorJacobi = [parseFloat(x.toFixed(casasErro)),parseFloat(y.toFixed(casasErro)),parseFloat(z.toFixed(casasErro))];
 			
-			imprimeNaTabela(index, '#tableJacobi', ultimoValorJacobi, valorErro);
+			imprimeNaTabela(index, 'tableJacobi', ultimoValorJacobi, valorErro);
 		} else {
 
 			var x = (resultFuncoes[0] + (matrizOriginal[0][1] * ultimoValorJacobi[1] * -1) + (matrizOriginal[0][2] * ultimoValorJacobi[2] * -1)) / matrizOriginal[0][0];
@@ -228,9 +266,9 @@
 
 			valorErro = [e1, e2, e3];
 			
-			ultimoValorJacobi = [parseFloat(x.toFixed(6)), parseFloat(y.toFixed(6)), parseFloat(z.toFixed(6))];
+			ultimoValorJacobi = [parseFloat(x.toFixed(casasErro)), parseFloat(y.toFixed(casasErro)), parseFloat(z.toFixed(casasErro))];
 			
-			imprimeNaTabela(index, '#tableJacobi', ultimoValorJacobi, valorErro);
+			imprimeNaTabela(index, 'tableJacobi', ultimoValorJacobi, valorErro);
 		}
 
 		if (iterar) {
@@ -244,8 +282,8 @@
 
 		if (index == 0) {
 			var x = resultFuncoes[0] / matrizOriginal[0][0];
-			var y = (resultFuncoes[1] + (matrizOriginal[1][0] * parseFloat(x.toFixed(6)) * -1)) / matrizOriginal[1][1];
-			var z = (resultFuncoes[2] + (matrizOriginal[2][0] * parseFloat(x.toFixed(6)) * -1) + (matrizOriginal[2][1] * parseFloat(y.toFixed(6)) * -1)) / matrizOriginal[2][2];
+			var y = (resultFuncoes[1] + (matrizOriginal[1][0] * parseFloat(x.toFixed(casasErro)) * -1)) / matrizOriginal[1][1];
+			var z = (resultFuncoes[2] + (matrizOriginal[2][0] * parseFloat(x.toFixed(casasErro)) * -1) + (matrizOriginal[2][1] * parseFloat(y.toFixed(casasErro)) * -1)) / matrizOriginal[2][2];
 
 			var e1 = Math.abs(x - ultimoValorSeidel[0]);
 				e1 = parseFloat(e1.toFixed(casasErro));
@@ -262,13 +300,13 @@
 
 			valorErro = [e1, e2, e3];
 
-			ultimoValorSeidel = [parseFloat(x.toFixed(6)),parseFloat(y.toFixed(6)),parseFloat(z.toFixed(6))];
+			ultimoValorSeidel = [parseFloat(x.toFixed(casasErro)),parseFloat(y.toFixed(casasErro)),parseFloat(z.toFixed(casasErro))];
 
-			imprimeNaTabela(index, '#tableSeidel', ultimoValorSeidel, valorErro);
+			imprimeNaTabela(index, 'tableSeidel', ultimoValorSeidel, valorErro);
 		} else {
 			var x = (resultFuncoes[0] + (matrizOriginal[0][1] * ultimoValorSeidel[1] * -1) + (matrizOriginal[0][2] * ultimoValorSeidel[2] * -1)) / matrizOriginal[0][0];
-			var y = (resultFuncoes[1] + (matrizOriginal[1][0] * parseFloat(x.toFixed(6)) * -1) + (matrizOriginal[1][2] * ultimoValorSeidel[2] * -1)) / matrizOriginal[1][1];
-			var z = (resultFuncoes[2] + (matrizOriginal[2][0] * parseFloat(x.toFixed(6)) * -1) + (matrizOriginal[2][1] * parseFloat(y.toFixed(6)) * -1)) / matrizOriginal[2][2];
+			var y = (resultFuncoes[1] + (matrizOriginal[1][0] * parseFloat(x.toFixed(casasErro)) * -1) + (matrizOriginal[1][2] * ultimoValorSeidel[2] * -1)) / matrizOriginal[1][1];
+			var z = (resultFuncoes[2] + (matrizOriginal[2][0] * parseFloat(x.toFixed(casasErro)) * -1) + (matrizOriginal[2][1] * parseFloat(y.toFixed(casasErro)) * -1)) / matrizOriginal[2][2];
 		
 			var e1 = Math.abs(x - ultimoValorSeidel[0]);
 				e1 = parseFloat(e1.toFixed(casasErro));
@@ -285,10 +323,10 @@
 
 			valorErro = [e1, e2, e3];
 
-			ultimoValorSeidel = [parseFloat(x.toFixed(6)), parseFloat(y.toFixed(6)), parseFloat(z.toFixed(6))];
+			ultimoValorSeidel = [parseFloat(x.toFixed(casasErro)), parseFloat(y.toFixed(casasErro)), parseFloat(z.toFixed(casasErro))];
 		
 
-			imprimeNaTabela(index, '#tableSeidel', ultimoValorSeidel, valorErro);
+			imprimeNaTabela(index, 'tableSeidel', ultimoValorSeidel, valorErro);
 		}
 
 		if (iterar) {
@@ -367,48 +405,48 @@
 		var e2 = null;
 		var e3 = null;
 
-		if (vetorErros[0] < erroAceitavel && vetorErros[0] >= 0) {
+		if (vetorErros[0] <= erroAceitavel && vetorErros[0] >= 0) {
 
-			v1 = "<td style='background-color:#007f1f;'>"+vetorValores[0]+"</td>";
-			e1 = "<td style='background-color:#007f1f;'>"+vetorErros[0]+"</td>";
+			v1 = "<td id='td-v-"+tabela+"-"+i+"' style='background-color:#007f1f;'>"+vetorValores[0]+"</td>";
+			e1 = "<td id='td-e-"+tabela+"-"+i+"' style='background-color:#007f1f;'>"+vetorErros[0]+"</td>";
 		} else {
 
-			v1 = "<td>"+vetorValores[0]+"</td>";
-			e1 = "<td>"+vetorErros[0]+"</td>";
+			v1 = "<td id='td-v-"+tabela+"-"+i+"'>"+vetorValores[0]+"</td>";
+			e1 = "<td id='td-e-"+tabela+"-"+i+"'>"+vetorErros[0]+"</td>";
 		}
 
-		if (vetorErros[1] < erroAceitavel && vetorErros[1] >= 0) {
+		if (vetorErros[1] <= erroAceitavel && vetorErros[1] >= 0) {
 
-			v2 = "<td style='background-color:#007f1f;'>"+vetorValores[1]+"</td>";
-			e2 = "<td style='background-color:#007f1f;'>"+vetorErros[1]+"</td>";
+			v2 = "<td id='td-v-"+tabela+"-"+i+"' style='background-color:#007f1f;'>"+vetorValores[1]+"</td>";
+			e2 = "<td id='td-e-"+tabela+"-"+i+"' style='background-color:#007f1f;'>"+vetorErros[1]+"</td>";
 		} else {
 
-			v2 = "<td>"+vetorValores[1]+"</td>";
-			e2 = "<td>"+vetorErros[1]+"</td>";
+			v2 = "<td id='td-v-"+tabela+"-"+i+"'>"+vetorValores[1]+"</td>";
+			e2 = "<td id='td-e-"+tabela+"-"+i+"'>"+vetorErros[1]+"</td>";
 		}
 
-		if (vetorErros[2] < erroAceitavel && vetorErros[2] >= 0) {
+		if (vetorErros[2] <= erroAceitavel && vetorErros[2] >= 0) {
 
-			v3 = "<td style='background-color:#007f1f;'>"+vetorValores[2]+"</td>";
-			e3 = "<td style='background-color:#007f1f;'>"+vetorErros[2]+"</td>";
+			v3 = "<td id='td-v-"+tabela+"-"+i+"' style='background-color:#007f1f;'>"+vetorValores[2]+"</td>";
+			e3 = "<td id='td-e-"+tabela+"-"+i+"' style='background-color:#007f1f;'>"+vetorErros[2]+"</td>";
 		} else {
 
-			v3 = "<td>"+vetorValores[2]+"</td>";
-			e3 = "<td>"+vetorErros[2]+"</td>";
+			v3 = "<td id='td-v-"+tabela+"-"+i+"'>"+vetorValores[2]+"</td>";
+			e3 = "<td id='td-e-"+tabela+"-"+i+"'>"+vetorErros[2]+"</td>";
 		}
 
 		if (i == 0) {
-			$(tabela + " .corpoTabela").html("<tr><td style='background-color:#999;'>"+i+"</td>" + v1 + v2 + v3 + e1 + e2 + e3 + "</tr>");
+			$("#" + tabela + " .corpoTabela").html("<tr><td style='background-color:#999;'>"+i+"</td>" + v1 + v2 + v3 + e1 + e2 + e3 + "</tr>");
 		} else {
-			$(tabela + " .corpoTabela tr:last").after("<tr><td style='background-color:#999;'>"+i+"</td>" + v1 + v2 + v3 + e1 + e2 + e3 + "</tr>");
+			$("#" + tabela + " .corpoTabela tr:last").after("<tr><td style='background-color:#999;'>"+i+"</td>" + v1 + v2 + v3 + e1 + e2 + e3 + "</tr>");
 		}
 	}
 
 	function validGauss(e1, e2, e3, tipo) {
 
-		if (e1 < erroAceitavel && e1 >= 0 &&
-			e2 < erroAceitavel && e2 >= 0 &&
-			e3 < erroAceitavel && e3 >= 0 ) {
+		if (e1 >= 0 && e1 <= erroAceitavel && 
+			e2 >= 0 && e2 <= erroAceitavel &&
+			e3 >= 0 && e3 <= erroAceitavel ) {
 
 			if (tipo == 'jacobi') {
 				if (confirm("Gauss Jacobi está dentro do erro aceitável.\n Continuar iterando?")) {

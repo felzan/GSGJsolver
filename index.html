@@ -3,6 +3,7 @@
 <head>
 	<title>GSGJsolver</title>
 	<link rel="stylesheet" type="number/css" href="style.css">
+	<link rel="stylesheet" type="text/css" href="sweetalert-master/dist/sweetalert.css">
 	<meta charset="utf-8">
 </head>
 <body>
@@ -30,30 +31,30 @@
 		</tr>
 
 		<tr>
-			<td><input type="number" value="3" name="x1" id="x1"></td>
-			<td><input type="number" value="-1" name="y1" id="y1"></td>
-			<td><input type="number" value="-1" name="z1" id="z1"></td>
-			<td>= <input type="number" value="1" name="e1" id="e1"></td>
+			<td><input type="number" class="changeBlock" value="3" name="x1" id="x1"></td>
+			<td><input type="number" class="changeBlock" value="-1" name="y1" id="y1"></td>
+			<td><input type="number" class="changeBlock" value="-1" name="z1" id="z1"></td>
+			<td>= <input type="number" class="changeBlock" value="1" name="e1" id="e1"></td>
 		</tr>
 		<tr>
-			<td><input type="number" value="-1" name="x2" id="x2"></td>
-			<td><input type="number" value="3" name="y2" id="y2"></td>
-			<td><input type="number" value="1" name="z2" id="z2"></td>
-			<td>= <input type="number" value="3" name="e2" id="e2"></td>
+			<td><input type="number" class="changeBlock" value="-1" name="x2" id="x2"></td>
+			<td><input type="number" class="changeBlock" value="3" name="y2" id="y2"></td>
+			<td><input type="number" class="changeBlock" value="1" name="z2" id="z2"></td>
+			<td>= <input type="number" class="changeBlock" value="3" name="e2" id="e2"></td>
 		</tr>
 		<tr>
-			<td><input type="number" value="2" name="x3" id="x3"></td>
-			<td><input type="number" value="1" name="y3" id="y3"></td>
-			<td><input type="number" value="4" name="z3" id="z3"></td>
-			<td>= <input type="number" value="7" name="e3" id="e3"></td>
+			<td><input type="number" class="changeBlock" value="2" name="x3" id="x3"></td>
+			<td><input type="number" class="changeBlock" value="1" name="y3" id="y3"></td>
+			<td><input type="number" class="changeBlock" value="4" name="z3" id="z3"></td>
+			<td>= <input type="number" class="changeBlock" value="7" name="e3" id="e3"></td>
 		</tr>
 	</tbody>
 </table>
 <br>
 
-Erro aceitável:<input type="text" value="0.000001" name="erroaceitavel" id="erroaceitavel">
+Erro aceitável:<input type="text" value="0" class="changeBlock" name="erroaceitavel" id="erroaceitavel">
 <br><br>
-Quantidade Máxima de iterações:<input type="number" value="100" name="numeroiteracoes" id="numeroiteracoes">
+Quantidade Máxima de iterações:<input type="number" value="100" class="changeBlock" name="numeroiteracoes" id="numeroiteracoes">
 <br>
 <hr></hr>
 
@@ -79,13 +80,13 @@ Quantidade Máxima de iterações:<input type="number" value="100" name="numeroi
 		<thead>
 		<tr><th colspan="7">Gauss-Jacobi</th></tr>
 		<tr>
-			<th>Iteração</th>
+			<th>Iteração<br>(k)</th>
 			<th>X</th>
 			<th>Y</th>
 			<th>Z</th>
-			<th>erro X</th>
-			<th>erro Y</th>
-			<th>erro Z</th>
+			<th>erro abs. X<br>(k - (k-1))</th>
+			<th>erro abs. Y<br>(k - (k-1))</th>
+			<th>erro abs. Z<br>(k - (k-1))</th>
 		</tr>
 		</thead>
 		<tbody class="corpoTabela"></tbody>
@@ -94,13 +95,13 @@ Quantidade Máxima de iterações:<input type="number" value="100" name="numeroi
 		<thead>
 		<tr><th colspan="7">Gauss-Seidel</th></tr>
 		<tr>
-			<th>Iteração</th>
+			<th>Iteração<br>(k)</th>
 			<th>X</th>
 			<th>Y</th>
 			<th>Z</th>
-			<th>erro X</th>
-			<th>erro Y</th>
-			<th>erro Z</th>
+			<th>erro abs. X<br>(k - (k-1))</th>
+			<th>erro abs. Y<br>(k - (k-1))</th>
+			<th>erro abs. Z<br>(k - (k-1))</th>
 		</tr>
 		</thead>
 		<tbody class="corpoTabela"></tbody>
@@ -108,6 +109,7 @@ Quantidade Máxima de iterações:<input type="number" value="100" name="numeroi
 </div>
 
 <script src="jquery-3.1.1.min.js"></script>
+<script src="sweetalert-master/dist/sweetalert.min.js"></script>
 <script src="solver.js"></script>
 </body>
 </html>
